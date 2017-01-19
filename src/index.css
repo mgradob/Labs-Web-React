@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-weight: 300;
+    font-family: 'Raleway';
+    font-style: normal;
+}
+
+.container {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+h1.headline {
+    font-size: 100px;
+    font-weight: 900;
+    font-family: 'Nunito Sans';
+    font-style: normal;
+}
+
+h1 {
+    font-weight: 900;
+    font-family: 'Nunito Sans';
+    font-style: normal;
+}
+
+h2 {
+    font-weight: 900;
+    font-family: 'Nunito Sans';
+    font-style: normal;
+}
