@@ -1,6 +1,6 @@
 /**
- * Created by mgradob on 12/22/16.
+ * Created by mgradob on 1/24/17.
  */
-import { Dispatcher } from 'flux';
+import {Dispatcher} from 'flux'
 
 export default new Dispatcher();

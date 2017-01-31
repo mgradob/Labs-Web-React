@@ -2,34 +2,13 @@
  * Created by mgradob on 12/5/16.
  */
 import React from "react";
-import {Link} from 'react-router';
 
 import Divider from "material-ui/Divider";
-import FlatButton from "material-ui/FlatButton";
 
 export default class LandingView extends React.Component {
     render() {
         return (
-            <div className="container">
-                <h1 className="headline">Labs CUU</h1>
-
-                <FlatButton
-                    primary={true}
-                    label='Entrar'
-                    containerElement={<Link to="/signin"/>}
-                />
-
-                <FlatButton
-                    primary={true}
-                    label='Registrarse'
-                    containerElement={<Link to="/signup"/>}
-                />
-
-                <br/>
-                <br/>
-
-                <Divider />
-                <h2>Aplicaciones Web y Móvil de Préstamos</h2>
+            <div>
                 <p>
                     El sistema de préstamo de material y equipo en los laboratorios del campus se está
                     actualizando, el nuevo sistema estará disponible vía Web, iOS y Android lo que
@@ -50,8 +29,8 @@ export default class LandingView extends React.Component {
                 </ul>
                 <br/>
 
-                <Divider />
                 <h2>Pedido en línea</h2>
+                <Divider />
                 <p>
                     Una vez localizados los componentes que desees, los puedes agregar a una lista de pedido y terminada
                     tu selección, enviar la solicitud de préstamo. El sistema enviará una
@@ -62,8 +41,8 @@ export default class LandingView extends React.Component {
                 </p>
                 <br/>
 
-                <Divider />
                 <h2>Revisar Historial</h2>
+                <Divider />
                 <p>
                     Con esta opción podrás revisar la lista de materiales o equipo que has pedido o tienes
                     prestados, te sentildealará que tienes pendientes de entregar y las fechas de solicitud y
@@ -71,8 +50,8 @@ export default class LandingView extends React.Component {
                 </p>
                 <br/>
 
-                <Divider />
                 <h2>Reserva de Material</h2>
+                <Divider />
                 <p>
                     Con el nuevo sistema de préstamo de laboratorio, al realizar un pedido contarás con un
                     plazo de 3 días de reservación de material. Si al pasar los 3 días no recogiste tu
