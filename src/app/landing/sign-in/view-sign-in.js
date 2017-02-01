@@ -3,11 +3,10 @@
  */
 import React from "react";
 
-import * as NavActions from '../commons/actions-nav';
-import * as AuthActions from '../commons/actions-auth';
+import * as AuthActions from '../../commons/actions-auth';
 
 import Axios from 'axios';
-import Constants from '../constants';
+import Constants from '../../constants';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from "material-ui/FlatButton";
@@ -84,7 +83,7 @@ export default class SignInView extends React.Component {
         return (this.state.id_user !== '' && this.state.password !== '') || this.state.showProgress;
     };
 
-    _goBack = () => NavActions.goToView(Constants.APP_STATE.VIEWS.LANDING);
+    _goBack = () => this.props.router.replace('/');
     //endregion
 
     //region Services
@@ -113,8 +112,7 @@ export default class SignInView extends React.Component {
 
                 AuthActions.saveSession(user, token);
 
-                if (user.user_type === 'admin')
-                    NavActions.goToView(Constants.APP_STATE.VIEWS.ADMIN_LABS);
+                if (user.user_type === 'admin') this.props.router.push('/admin');
             })
             .catch((error) => {
                 console.error('SignInStore', 'Sign In', error);

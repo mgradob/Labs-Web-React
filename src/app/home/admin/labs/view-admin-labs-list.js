@@ -3,12 +3,9 @@
  */
 import React from 'react';
 
-import AuthenticatedView from '../../base/view-base-authenticated';
+import AuthenticatedView from '../../../base/view-base-authenticated';
 
-import * as AuthActions from '../../commons/actions-auth';
-import * as NavActions from '../../commons/actions-nav';
-
-import Constants from '../../constants';
+import * as AuthActions from '../../../commons/actions-auth';
 
 import {List, ListItem} from 'material-ui/List';
 
@@ -32,7 +29,7 @@ export default class AdminLabsListView extends AuthenticatedView {
     //region Logic
     _onLabClicked = (lab) => {
         AuthActions.saveLab(lab);
-        NavActions.goToView(Constants.APP_STATE.VIEWS.ADMIN_HOME_DASHBOARD);
+        this.props.router.push('/admin/home/');
     };
     //endregion
 }

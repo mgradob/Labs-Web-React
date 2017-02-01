@@ -3,10 +3,8 @@
  */
 import React from "react";
 
-import * as NavActions from '../commons/actions-nav';
-
 import Axios from 'axios';
-import Constants from '../constants';
+import Constants from '../../constants';
 
 import TextField from 'material-ui/TextField';
 
@@ -448,9 +446,9 @@ export default class SignUpView extends React.Component {
         }
     };
 
-    _goBack = () => NavActions.goToView(Constants.APP_STATE.VIEWS.LANDING);
+    _goBack = () => this.props.router.replace('/');
 
-    _finishSignUp = () => NavActions.goToView(Constants.APP_STATE.VIEWS.LANDING);
+    _finishSignUp = () => this.props.router.replace('/');
     //endregion
 }
 

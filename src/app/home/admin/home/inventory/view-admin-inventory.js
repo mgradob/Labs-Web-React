@@ -2,11 +2,12 @@
  * Created by mgradob on 1/30/17.
  */
 import React from 'react';
+import {Link} from 'react-router';
 
 import Axios from 'axios';
-import Constants from '../../constants';
+import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../base/view-base-authenticated';
+import AuthenticatedView from '../../../../base/view-base-authenticated';
 
 import {List, ListItem} from 'material-ui/List';
 
@@ -36,16 +37,12 @@ export default class AdminInventoryView extends AuthenticatedView {
         if (this.state.categories.length > 0)
             categoriesList = <List children={
                 this.state.categories.map((category) => {
-                    return <CategoryListItem category={category} key={this.state.categories.indexOf(category)} onCategoryClicked={this._onCategoryClicked.bind(this)}/>;
+                    return <CategoryListItem category={category} key={this.state.categories.indexOf(category)} location={this.props.location}/>;
                 })
             }/>;
         else categoriesList = <p>No hay categorias por el momento.</p>;
 
         return categoriesList;
-    };
-
-    _onCategoryClicked = (category) => {
-        console.log('AdminHomeDashboard', 'Clicked', category);
     };
     //endregion
 
@@ -93,18 +90,15 @@ class CategoryListItem extends React.Component {
     }
 
     render() {
+        let url = '/admin/home/inventory/' + this.state.category.id;
+
         return (
             <ListItem
                 primaryText={this.state.category.name}
-                onTouchTap={this._onCategoryClicked.bind(this)}/>
+                containerElement={<Link to={url}/>}
+            />
         )
     }
 
-    //endregion
-
-    //region Logic
-    _onCategoryClicked = () => {
-        this.props._onCategoryClicked(this.state.category);
-    };
     //endregion
 }

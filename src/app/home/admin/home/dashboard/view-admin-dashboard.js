@@ -4,15 +4,15 @@
 import React from 'react';
 
 import Axios from 'axios';
-import Constants from '../../constants';
+import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../base/view-base-authenticated';
+import AuthenticatedView from '../../../../base/view-base-authenticated';
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Chip from 'material-ui/Chip';
 
-export default class AdminHomeDashboardView extends AuthenticatedView {
+export default class AdminDashboardView extends AuthenticatedView {
     //region Component
     componentWillMount() {
         this.setState({
