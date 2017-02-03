@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-    BASE_URL: 'http://localhost:8080',
+    BASE_URL: 'https://labs-chih.herokuapp.com',
     API_RESPONSE: {
         success: {
             code: 100,
