@@ -2,17 +2,16 @@
  * Created by mgradob on 1/31/17.
  */
 import React from 'react'
+import {Link} from 'react-router';
 
 import Axios from 'axios';
-import Constants from '../../../../../constants';
+import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../../../../base/view-base-authenticated';
+import AuthenticatedView from '../../../../base/view-base-authenticated';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
 import {List, ListItem} from 'material-ui/List';
-import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 
 export default class AdminInventoryDetailView extends AuthenticatedView {
     //region Component
@@ -20,22 +19,22 @@ export default class AdminInventoryDetailView extends AuthenticatedView {
         this.setState({
             showProgress: false,
             category: null,
-            showAddForm: false
+            showAddForm: false,
+            showEditForm: false
         });
 
         this._getCategory();
     }
 
     render() {
-        let addForm;
-        if (this.state.showAddForm) addForm = this._renderAddForm();
+        let addUrl = `/admin/home/inventory/${this.props.params.category_id}/add`;
 
         if (this.state.category === null) return <div></div>;
         return (
             <div>
                 <TextField
-                    label={this.state.category.name}
-                    floatingLabelText={this.state.category.name}
+                    value={this.state.category.name}
+                    floatingLabelText="Nombre"
                     onChange={this._setCategoryName.bind(this)}
                 />
                 <br/>
@@ -44,11 +43,11 @@ export default class AdminInventoryDetailView extends AuthenticatedView {
                 <RaisedButton
                     label="Agregar Item"
                     primary={true}
-                    onTouchTap={this._showAddForm.bind(this)}
+                    containerElement={<Link to={addUrl}/>}
                 />
                 <br/>
 
-                {addForm}
+                {this._formatItems()}
             </div>
         );
     }
@@ -65,45 +64,17 @@ export default class AdminInventoryDetailView extends AuthenticatedView {
         });
     };
 
-    _showAddForm = () => {
-        this.setState({
-            showAddForm: true
-        });
-    };
+    _formatItems = () => {
+        let itemsList;
+        if (this.state.category.items.length > 0)
+            itemsList = <List children={
+                this.state.category.items.map((item, index) => {
+                    return <ItemListItem category={this.state.category} item={item} key={index}/>;
+                })
+            }/>;
+        else itemsList = <p>No hay items por el momento.</p>;
 
-    _renderAddForm = () => {
-        return (
-            <Card>
-                <CardTitle title='Nuevo Item'/>
-
-                <TextField
-                    hint='Nombre'
-                    floatingLabelText='Nombre'
-                />
-                <br/>
-
-                <TextField
-                    hint='Notas'
-                    floatingLabelText='Notas'
-                />
-                <br/>
-
-                <TextField
-                    hint='Total'
-                    floatingLabelText='Total'
-                />
-                <TextField
-                    hint='Disponible'
-                    floatingLabelText='Disponible'
-                />
-                <br/>
-
-                <CardActions>
-                    <FlatButton label='Cancelar'/>
-                    <RaisedButton label='Agregar' primary={true}/>
-                </CardActions>
-            </Card>
-        );
+        return itemsList;
     };
     //endregion
 
@@ -113,7 +84,7 @@ export default class AdminInventoryDetailView extends AuthenticatedView {
             showProgress: true
         });
 
-        let url = Constants.BASE_URL + '/inventory/' + this.state.lab.id + '/' + this.props.params.category_id;
+        let url = `${Constants.BASE_URL}/inventory/${this.state.lab.id}/${this.props.params.category_id}`;
 
         Axios.get(url, {
             headers: {
@@ -139,5 +110,28 @@ export default class AdminInventoryDetailView extends AuthenticatedView {
             });
         });
     };
+    //endregion
+}
+
+class ItemListItem extends React.Component {
+    //region Component
+    componentWillMount() {
+        this.setState({
+            item: this.props.item,
+            category: this.props.category
+        });
+    }
+
+    render() {
+        let url = `/admin/home/inventory/${this.state.category.id}/edit/${this.state.item.id}`;
+
+        return(
+            <ListItem
+                primaryText={this.state.item.name}
+                secondaryText={this.state.item.notes}
+                containerElement={<Link to={url}/>}
+            />
+        )
+    }
     //endregion
 }

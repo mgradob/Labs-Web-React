@@ -4,9 +4,9 @@
 import React from 'react';
 
 import Axios from 'axios';
-import Constants from '../../../../../constants';
+import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../../../../base/view-base-authenticated';
+import AuthenticatedView from '../../../../base/view-base-authenticated';
 
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';

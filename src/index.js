@@ -16,7 +16,8 @@ import AdminLabsView from './app/home/admin/labs/view-admin-labs-list';
 import AdminHomeView from './app/home/admin/home/view-admin-home';
 import AdminDashboardView from './app/home/admin/home/dashboard/view-admin-dashboard';
 import AdminInventoryView from './app/home/admin/home/inventory/view-admin-inventory';
-import AdminInventoryDetailView from './app/home/admin/home/inventory/edit/view-admin-inventory-detail';
+import AdminInventoryDetailView from './app/home/admin/home/inventory/view-admin-inventory-detail';
+import EditItemView from './app/home/admin/home/inventory/edit/view-admin-edit-item';
 
 injectTapEventPlugin();
 
@@ -35,6 +36,8 @@ render((
                     {/*<Route path='requests' component/>*/}
                     <Route path='inventory' component={AdminInventoryView}/>
                     <Route path='inventory/:category_id' component={AdminInventoryDetailView}/>
+                    {/*<Route path='inventory/:category_id/add' component={}/>*/}
+                    <Route path='inventory/:category_id/edit/:item_id' component={EditItemView}/>
                 </Route>
             </Route>
             <Route path='*' component={ErrorView}/>
