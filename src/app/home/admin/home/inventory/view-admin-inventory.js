@@ -9,6 +9,7 @@ import Constants from '../../../../constants';
 
 import AuthenticatedView from '../../../../base/view-base-authenticated';
 
+import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
 
 export default class AdminInventoryView extends AuthenticatedView {
@@ -22,17 +23,23 @@ export default class AdminInventoryView extends AuthenticatedView {
     }
 
     render() {
+        let addUrl = `/admin/home/inventory/add`;
+
         return (
             <div>
-                {this._formatInventory()}
+                <RaisedButton
+                    label="Agregar Categoría"
+                    primary={true}
+                    containerElement={<Link to={addUrl}/>}/>
+
+                {this._renderCategories()}
             </div>
         )
     }
-
     //endregion
 
     //region Logic
-    _formatInventory = () => {
+    _renderCategories = () => {
         let categoriesList;
         if (this.state.categories.length > 0)
             categoriesList = <List children={

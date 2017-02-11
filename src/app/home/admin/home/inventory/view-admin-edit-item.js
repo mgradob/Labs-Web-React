@@ -4,9 +4,9 @@
 import React from 'react'
 
 import Axios from 'axios';
-import Constants from '../../../../../constants';
+import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../../../../base/view-base-authenticated';
+import AuthenticatedView from '../../../../base/view-base-authenticated';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -71,7 +71,7 @@ export default class EditItemView extends AuthenticatedView {
                 <br/>
 
                 <FlatButton label='Cancelar'/>,
-                <RaisedButton label='Agregar' primary={true}/>
+                <RaisedButton label='Actualizar' primary={true}/>
             </div>
         );
     };

@@ -127,8 +127,8 @@ class ItemListItem extends React.Component {
 
         return(
             <ListItem
-                primaryText={this.state.item.name}
-                secondaryText={this.state.item.notes}
+                primaryText={this.state.item.name + ' | ' + this.state.item.note}
+                secondaryText={'Disponible: ' + this.state.item.available + ' | Total: ' + this.state.item.total}
                 containerElement={<Link to={url}/>}
             />
         )
