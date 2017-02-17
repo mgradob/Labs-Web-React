@@ -3,17 +3,19 @@
  */
 import React from 'react';
 
+import BaseView from './view-base';
+
 import AuthStore from '../commons/store-auth';
 
-export default class AuthenticatedView extends React.Component {
-    constructor() {
-        super();
-
-        this.state = {
+class AuthenticatedView extends BaseView {
+    componentWillMount() {
+        this.setState({
             user: AuthStore._getUser(),
             token: AuthStore._getToken(),
             lab: AuthStore._getLab(),
             showProgress: false
-        }
+        });
     }
 }
+
+export default AuthenticatedView;

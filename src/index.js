@@ -4,6 +4,7 @@ import {render} from "react-dom";
 import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import injectTapEventPlugin from "react-tap-event-plugin";
+import * as firebase from 'firebase';
 
 import MainView from "./app/commons/view-main";
 import ErrorView from './app/commons/view-error';
@@ -21,6 +22,15 @@ import AdminInventoryDetailView from './app/home/admin/home/inventory/view-admin
 import EditItemView from './app/home/admin/home/inventory/view-admin-edit-item';
 
 injectTapEventPlugin();
+
+var config = {
+    apiKey: "AIzaSyA2GH0ELrhw_8wI6QqCXSzS7S-0Wy6MtnE",
+    authDomain: "labs-d3e30.firebaseapp.com",
+    databaseURL: "https://labs-d3e30.firebaseio.com",
+    storageBucket: "labs-d3e30.appspot.com",
+    messagingSenderId: "431852162818"
+};
+firebase.initializeApp(config);
 
 render((
     <MuiThemeProvider>

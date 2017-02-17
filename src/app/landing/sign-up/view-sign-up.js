@@ -1,13 +1,10 @@
 /**
  * Created by mgradob on 12/18/16.
  */
-import React from "react";
-
-import Axios from 'axios';
-import Constants from '../../constants';
+import React from 'react';
+import * as Firebase from 'firebase';
 
 import TextField from 'material-ui/TextField';
-
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from "material-ui/FlatButton";
 import {Stepper, Step, StepLabel, StepContent} from 'material-ui/Stepper';
@@ -17,7 +14,7 @@ import MenuItem from 'material-ui/MenuItem';
 import {List, ListItem} from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 
-export default class SignUpView extends React.Component {
+class SignUpView extends React.Component {
     STEP_FULL_NAME = 0;
     STEP_ID_USER = 1;
     STEP_CAREER = 2;
@@ -30,11 +27,14 @@ export default class SignUpView extends React.Component {
         'Chihuahua'
     ];
 
-    //region Component
-    constructor() {
-        super();
+    authRef;
+    labsRef;
+    availableLabsRef;
+    usersRef;
 
-        this.state = {
+    //region Component
+    componentWillUnmount() {
+        this.setState({
             step: this.STEP_FULL_NAME,
             showProgress: false,
             full_name: '',
@@ -44,13 +44,14 @@ export default class SignUpView extends React.Component {
             password: '',
             availableLabs: [],
             selectedLabs: []
-        };
-    };
-
-    componentWillUnmount() {
-        this.setState({
-            step: this.STEP_FULL_NAME
         });
+    }
+
+    componentDidMount() {
+        this.authRef = Firebase.auth();
+        this.labsRef = Firebase.database().ref().child('labs');
+        this.availableLabsRef = Firebase.database().ref().child('available-labs');
+        this.usersRef = Firebase.database().ref().child('users');
     }
 
     render() {
@@ -130,101 +131,100 @@ export default class SignUpView extends React.Component {
 
     //region Services
     _signUpUser = () => {
-        let url = Constants.BASE_URL + '/signup';
+        this.authRef.createUserWithEmailAndPassword(this.state.id_user + '@itesm.mx', this.state.password)
+            .then(user => {
+                console.log('Firebase', 'Sign Up', 'Success', user);
 
-        let body = {
-            full_name: this.state.full_name,
-            id_user: this.state.id_user,
-            career: this.state.career,
-            campus: this.state.campus,
-            password: this.state.password
-        };
+                this.usersRef.child(this.state.id_user).set({
+                    id: this.state.id_user,
+                    name: this.state.full_name,
+                    email: this.state.id_user + '@itesm.mx',
+                    career: this.state.career,
+                    campus: this.state.campus
+                }).then(() => {
+                    console.log('Firebase', 'Sign Up', 'Success', user);
 
-        Axios.post(url, body)
-            .then((response) => {
-                console.log('SignUpStore', 'Sign Up', response.data);
+                    this.setState({
+                        step: this.state.step + 1,
+                        showProgress: false
+                    });
 
-                this.setState({
-                    step: this.state.step + 1,
-                    showProgress: false
+                    this._getLabs();
+                }).catch(err => {
+                    console.log('Firebase', 'Sign Up', 'Failed', err);
+
+                    this.setState({
+                        showProgress: false
+                    });
                 });
-
-                this._getLabs();
             })
-            .catch((error) => {
-                console.error('SignUpStore', 'Sign Up', error.response.data);
+            .catch(err => {
+                console.log('Firebase', 'Sign Up', 'Failed', err);
 
                 this.setState({
                     showProgress: false
                 });
 
-                if (error.response.data.status === Constants.API_RESPONSE.failed.sign_up.already_exists.code) {
+                if (err.code === 'auth/email-already-in-use') {
                     this.setState({
                         step: this.STEP_FINISHED
                     });
-                } else {
-
                 }
             });
-
-        this.setState({
-            showProgress: true
-        });
     };
 
     _getLabs = () => {
-        let url = Constants.BASE_URL + '/signup/' + this.state.id_user;
+        this.availableLabsRef.child(this.state.campus)
+            .on('child_added', snap => {
+                console.log('Firebase', 'Sign Up', 'Available Labs', snap.val());
+                let lab = snap.val();
 
-        Axios.get(url)
-            .then((response) => {
-                console.log('SignUpStore', 'Get Labs', response.data);
-
-                this.setState({
-                    showProgress: false,
-                    availableLabs: response.data.data
-                });
-            })
-            .catch((error) => {
-                console.error('SignUpStore', 'Get Labs', error.response.data);
+                let tempLabs = this.state.availableLabs;
+                tempLabs.splice(lab.id, 0, lab);
 
                 this.setState({
-                    showProgress: false
+                    availableLab: tempLabs
                 });
             });
-
-
-        this.setState({
-            showProgress: true
-        });
     };
 
     _postLabs = () => {
-        let url = Constants.BASE_URL + '/signup/' + this.state.id_user;
+        if (this.state.selectedLabs.length > 0) {
+            this.state.selectedLabs.map(lab => {
+                this.labsRef.child(this.state.campus)
+                    .child(lab.id)
+                    .child('new-users')
+                    .child(this.state.id_user)
+                    .set({
+                        id: this.state.id_user,
+                        name: this.state.full_name,
+                        date: Date.now()
+                    })
+                    .then(() => {
+                        console.log('Firebase', 'Sign Up', 'Signed up on lab', lab.name);
 
-        let body = {
-            labs: this.state.selectedLabs
-        };
+                        this.setState({
+                            showProgress: false,
+                            step: this.STEP_FINISHED
+                        });
+                    })
+                    .catch(() => {
+                        console.log('Firebase', 'Sign Up', 'Error signing up on lab', lab.name);
 
-        Axios.post(url, body)
-            .then((response) => {
-                console.log('Register', 'Post Labs', response.data);
-
-                this.setState({
-                    showProgress: false,
-                    step: this.STEP_FINISHED
-                });
-            })
-            .catch((error) => {
-                console.error('Register', 'Post Labs', error);
-
-                this.setState({
-                    showProgress: false
-                });
+                        this.setState({
+                            showProgress: false
+                        });
+                    });
             });
 
-        this.setState({
-            showProgress: true
-        });
+            this.setState({
+                showProgress: true
+            });
+        } else {
+            this.setState({
+                step: this.STEP_FINISHED
+            });
+        }
     };
     //endregion
 
@@ -422,11 +422,6 @@ export default class SignUpView extends React.Component {
                 ];
             case this.STEP_LABS:
                 return [
-                    <FlatButton
-                        key={0}
-                        label='Atrás'
-                        onTouchTap={this._previousStep.bind(this)}
-                    />,
                     <RaisedButton
                         key={1}
                         label={this.state.selectedLabs.length > 0 ? 'Guardar' : 'Continuar'}
@@ -480,3 +475,5 @@ class LabListItem extends React.Component {
         );
     }
 }
+
+export default SignUpView;

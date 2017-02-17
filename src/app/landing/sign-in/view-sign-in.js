@@ -1,28 +1,29 @@
 /**
  * Created by mgradob on 12/18/16.
  */
-import React from "react";
+import React from 'react';
+import * as Firebase from 'firebase';
 
-import * as AuthActions from '../../commons/actions-auth';
-
-import Axios from 'axios';
-import Constants from '../../constants';
+import BaseView from '../../base/view-base';
 
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from "material-ui/FlatButton";
-import TextField from "material-ui/TextField";
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 import ProgressBar from 'material-ui/LinearProgress';
 
-export default class SignInView extends React.Component {
-    //region Component
-    constructor() {
-        super();
+class SignInView extends BaseView {
+    authRef;
+    usersRef;
 
-        this.state = {
+    //region Component
+    componentWillMount() {
+        this.setState({
             id_user: '',
             password: '',
             showProgress: false
-        }
+        });
+        this.authRef = Firebase.auth();
+        this.usersRef = Firebase.database().ref().child('users');
     }
 
     render() {
@@ -64,6 +65,7 @@ export default class SignInView extends React.Component {
             </div>
         );
     };
+
     //endregion
 
     //region Form Logic
@@ -92,30 +94,35 @@ export default class SignInView extends React.Component {
             showProgress: true
         });
 
-        let url = Constants.BASE_URL + '/signin';
+        this.authRef.signInWithEmailAndPassword(this.state.id_user + '@itesm.mx', this.state.password)
+            .then(() => {
+                console.log('Firebase', 'SignIn', 'Success', this.state.id_user + '@itesm.mx');
 
-        let body = {
-            id_user: this.state.id_user,
-            password: this.state.password
-        };
+                this.usersRef.child(this.state.id_user)
+                    .once('value')
+                    .then(snap => {
+                        console.log('Firebase', 'SignIn', 'User Info', snap.val());
+                        let user = snap.val();
 
-        Axios.post(url, body)
-            .then((response) => {
-                console.log('SignInStore', 'Sign In', response.data);
+                        this.setState({
+                            showProgress: false
+                        });
 
-                this.setState({
-                    showProgress: false
-                });
-
-                let user = response.data.data.user;
-                let token = response.data.data.token;
-
-                AuthActions.saveSession(user, token);
-
-                if (user.user_type === 'admin') this.props.router.push('/admin');
+                        if (user.career === 'ADMIN') this.props.router.push('/admin');
+                    });
             })
-            .catch((error) => {
-                console.error('SignInStore', 'Sign In', error);
+            .catch(err => {
+                console.log('Firebase', 'SignIn', 'Error', err);
+
+                switch (err.code) {
+                    case 'auth/user-disabled':
+                        break;
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                        this._showAlert('Usuario o password incorrecto');
+
+                        break;
+                }
 
                 this.setState({
                     showProgress: false
@@ -124,3 +131,5 @@ export default class SignInView extends React.Component {
     };
     //endregion
 }
+
+export default SignInView;
