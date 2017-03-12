@@ -6,16 +6,16 @@ import React from 'react'
 import Axios from 'axios';
 import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../../../base/view-base-authenticated';
-
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
-export default class EditItemView extends AuthenticatedView {
+export default class EditItemView extends React.Component {
     //region Component
-    componentWillMount() {
+    constructor() {
+        super();
+
         this.setState({
             item: null
         });

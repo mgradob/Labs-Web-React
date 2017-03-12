@@ -1,27 +1,26 @@
 /**
  * Created by mgradob on 12/18/16.
  */
-import React from 'react';
-import * as Firebase from 'firebase';
+import React from "react";
+import * as Firebase from "firebase";
+import RaisedButton from "material-ui/RaisedButton";
+import TextField from "material-ui/TextField";
+import ProgressBar from "material-ui/LinearProgress";
 
-import BaseView from '../../base/view-base';
-
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import ProgressBar from 'material-ui/LinearProgress';
-
-class SignInView extends BaseView {
+class SignInView extends React.Component {
     authRef;
     usersRef;
 
     //region Component
-    componentWillMount() {
-        this.setState({
+    constructor() {
+        super();
+
+        this.state = {
             id_user: '',
             password: '',
             showProgress: false
-        });
+        };
+
         this.authRef = Firebase.auth();
         this.usersRef = Firebase.database().ref().child('users');
     }
@@ -31,7 +30,7 @@ class SignInView extends BaseView {
         if (this.state.showProgress) progressBar = <ProgressBar mode="indeterminate"/>;
 
         return (
-            <div>
+            <div className="container">
                 {progressBar}
 
                 <p>Introduce tu información para ingresar. La matrícula debe tener el formato 'A0' o 'L0'.</p>
@@ -57,11 +56,6 @@ class SignInView extends BaseView {
                     disabled={!this._enableSignInButton()}
                     onTouchTap={this._signInUser.bind(this)}
                 />
-
-                <FlatButton
-                    label="Cancelar"
-                    onTouchTap={this._goBack.bind(this)}
-                />
             </div>
         );
     };
@@ -84,8 +78,6 @@ class SignInView extends BaseView {
     _enableSignInButton = () => {
         return (this.state.id_user !== '' && this.state.password !== '') || this.state.showProgress;
     };
-
-    _goBack = () => this.props.router.replace('/');
     //endregion
 
     //region Services
@@ -119,8 +111,6 @@ class SignInView extends BaseView {
                         break;
                     case 'auth/user-not-found':
                     case 'auth/wrong-password':
-                        this._showAlert('Usuario o password incorrecto');
-
                         break;
                 }
 

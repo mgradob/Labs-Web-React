@@ -1,18 +1,17 @@
 /**
  * Created by mgradob on 12/18/16.
  */
-import React from 'react';
-import * as Firebase from 'firebase';
-
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import React from "react";
+import * as Firebase from "firebase";
+import TextField from "material-ui/TextField";
+import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
-import {Stepper, Step, StepLabel, StepContent} from 'material-ui/Stepper';
-import ProgressBar from 'material-ui/LinearProgress';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import {List, ListItem} from 'material-ui/List';
-import Checkbox from 'material-ui/Checkbox';
+import {Stepper, Step, StepLabel, StepContent} from "material-ui/Stepper";
+import ProgressBar from "material-ui/LinearProgress";
+import SelectField from "material-ui/SelectField";
+import MenuItem from "material-ui/MenuItem";
+import {List, ListItem} from "material-ui/List";
+import Checkbox from "material-ui/Checkbox";
 
 class SignUpView extends React.Component {
     STEP_FULL_NAME = 0;
@@ -33,6 +32,27 @@ class SignUpView extends React.Component {
     usersRef;
 
     //region Component
+    constructor() {
+        super();
+
+        this.state = {
+            step: this.STEP_FULL_NAME,
+            showProgress: false,
+            full_name: '',
+            id_user: '',
+            career: '',
+            campus: this.campuses[0],
+            password: '',
+            availableLabs: [],
+            selectedLabs: []
+        };
+
+        this.authRef = Firebase.auth();
+        this.labsRef = Firebase.database().ref().child('labs');
+        this.availableLabsRef = Firebase.database().ref().child('available-labs');
+        this.usersRef = Firebase.database().ref().child('users');
+    }
+
     componentWillUnmount() {
         this.setState({
             step: this.STEP_FULL_NAME,
@@ -47,13 +67,6 @@ class SignUpView extends React.Component {
         });
     }
 
-    componentDidMount() {
-        this.authRef = Firebase.auth();
-        this.labsRef = Firebase.database().ref().child('labs');
-        this.availableLabsRef = Firebase.database().ref().child('available-labs');
-        this.usersRef = Firebase.database().ref().child('users');
-    }
-
     render() {
         let stepView = this._getStepView();
         let actions = this._getStepActions();
@@ -62,7 +75,7 @@ class SignUpView extends React.Component {
         if (this.state.showProgress) progressBar = <ProgressBar mode='indeterminate'/>;
 
         return (
-            <div>
+            <div className="container">
                 {progressBar}
 
                 <Stepper activeStep={this.state.step} orientation='vertical'>

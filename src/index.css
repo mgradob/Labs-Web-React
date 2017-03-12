@@ -4,11 +4,12 @@ body {
     font-weight: 300;
     font-family: 'Raleway', sans-serif;
     font-style: normal;
+    background: #FAFAFA;
 }
 
 .container {
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 5%;
+    margin: 0;
 }
 
 h1.headline {

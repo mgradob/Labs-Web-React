@@ -6,8 +6,6 @@ import React from 'react'
 import Axios from 'axios';
 import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../../../base/view-base-authenticated';
-
 import AddItemView from './view-admin-add-item';
 
 import TextField from 'material-ui/TextField';
@@ -16,9 +14,11 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
 
-export default class AddCategoryView extends AuthenticatedView {
+export default class AddCategoryView extends React.Component {
     //region Component
-    componentWillMount() {
+    constructor() {
+        super();
+
         this.setState({
             name: null,
             items: [],

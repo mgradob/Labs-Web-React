@@ -7,14 +7,14 @@ import {Link} from 'react-router';
 import Axios from 'axios';
 import Constants from '../../../../constants';
 
-import AuthenticatedView from '../../../../base/view-base-authenticated';
-
 import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
 
-export default class AdminInventoryView extends AuthenticatedView {
+export default class AdminInventoryView extends React.Component {
     //region Component
-    componentWillMount() {
+    constructor() {
+        super();
+
         this.setState({
             categories: [],
         });

@@ -1,21 +1,19 @@
 /**
  * Created by mgradob on 1/31/17.
  */
-import React from 'react'
-import {Link} from 'react-router';
+import React from "react";
+import {Link} from "react-router";
+import Axios from "axios";
+import Constants from "../../../../constants";
+import TextField from "material-ui/TextField";
+import RaisedButton from "material-ui/RaisedButton";
+import {List, ListItem} from "material-ui/List";
 
-import Axios from 'axios';
-import Constants from '../../../../constants';
-
-import AuthenticatedView from '../../../../base/view-base-authenticated';
-
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import {List, ListItem} from 'material-ui/List';
-
-export default class AdminInventoryDetailView extends AuthenticatedView {
+export default class AdminInventoryDetailView extends React.Component {
     //region Component
-    componentWillMount() {
+    constructor() {
+        super();
+
         this.setState({
             showProgress: false,
             category: null,
@@ -125,7 +123,7 @@ class ItemListItem extends React.Component {
     render() {
         let url = `/admin/home/inventory/${this.state.category.id}/edit/${this.state.item.id}`;
 
-        return(
+        return (
             <ListItem
                 primaryText={this.state.item.name + ' | ' + this.state.item.note}
                 secondaryText={'Disponible: ' + this.state.item.available + ' | Total: ' + this.state.item.total}
@@ -133,5 +131,6 @@ class ItemListItem extends React.Component {
             />
         )
     }
+
     //endregion
 }

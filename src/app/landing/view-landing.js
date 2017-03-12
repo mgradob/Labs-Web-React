@@ -2,13 +2,12 @@
  * Created by mgradob on 12/5/16.
  */
 import React from "react";
-
 import Divider from "material-ui/Divider";
 
 export default class LandingView extends React.Component {
     render() {
         return (
-            <div>
+            <div className="container">
                 <p>
                     El sistema de préstamo de material y equipo en los laboratorios del campus se está
                     actualizando, el nuevo sistema estará disponible vía Web, iOS y Android lo que
@@ -17,7 +16,7 @@ export default class LandingView extends React.Component {
                 </p>
                 <ul>
                     <li>En la página labs.chi.itesm.mx, registrar tu usuario (correo institucional) y
-                        contrasentildea.
+                        contraseña.
                     </li>
                     <li>Acudir al laboratorio con tu credencial para realizar la validación de tu cuenta.</li>
                 </ul>

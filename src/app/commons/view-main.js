@@ -1,33 +1,87 @@
 /**
  * Created by mgradob on 1/25/17.
  */
-import React from 'react';
+import React from "react";
+import {Toolbar, ToolbarGroup} from "material-ui/Toolbar";
+import FlatButton from "material-ui/FlatButton";
+import RaisedButton from "material-ui/RaisedButton";
+import {Link} from "react-router";
 
-import BaseView from '../base/view-base';
-import HeaderView from './view-header';
-import LandingNavBarView from '../landing/view-landing-nav-bar';
+export default class MainView extends React.Component {
+    urlDashboard = '/admin/home/';
+    urlRequests = '/admin/home/requests';
+    urlInventory = '/admin/home/inventory';
+    urlNewUsers = '/admin/home/new-users';
+    urlUsers = '/admin/home/users';
 
-import Snackbar from 'material-ui/Snackbar';
-
-export default class MainView extends BaseView {
     //region Component
     render() {
         return (
             <div>
-                <HeaderView/>
+                {this.renderToolbar(this.props.location.pathname)}
 
-                <LandingNavBarView/>
+                {this.renderSubtoolbar(this.props.location.pathname)}
 
                 {this.props.children}
-
-                <Snackbar
-                    open={this.state.showAlert}
-                    message={this.state.alertMessage}
-                    onRequestClose={this._handleAlertClose}
-                    autoHideDuration={4000}
-                />
             </div>
         );
     }
+    //endregion
+
+    //region Logic
+    renderToolbar = (location) => {
+        console.log('ReactRouter', 'Current Location', location);
+
+        switch (location) {
+            case '/':
+            case '/sign-in':
+            case '/sign-up':
+                return (
+                    // TODO: Override styles
+                    <Toolbar>
+                        <ToolbarGroup firstChild={true}>
+                            <FlatButton label='Labs CUU' containerElement={<Link to='/'/>}/>
+                        </ToolbarGroup>
+                        <ToolbarGroup>
+                            <FlatButton label='Entrar' containerElement={<Link to='/sign-in'/>}/>
+                            <RaisedButton label='Registrarse' containerElement={<Link to='/sign-up'/>}/>
+                        </ToolbarGroup>
+                    </Toolbar>
+                );
+            case '/admin':
+            case '/admin/account':
+                return (
+                    // TODO: Override styles
+                    <Toolbar>
+                        <ToolbarGroup firstChild={true}>
+                            <FlatButton label='Labs CUU' containerElement={<Link to='/admin'/>}/>
+                        </ToolbarGroup>
+                        <ToolbarGroup>
+                            <FlatButton label='Salir' containerElement={<Link to='/'/>}/>
+                        </ToolbarGroup>
+                    </Toolbar>
+
+                );
+            default: return null;
+        }
+    };
+
+    renderSubtoolbar = (location) => {
+        switch (location) {
+            case '/admin':
+            case '/admin/account':
+                return (
+                    // TODO: Override styles
+                    <Toolbar>
+                        <ToolbarGroup firstChild={true}>
+                            <FlatButton label='Laboratorios' containerElement={<Link to='/admin'/>}/>
+                            <FlatButton label='Mi Cuenta' containerElement={<Link to='/admin/account'/>}/>
+                        </ToolbarGroup>
+                    </Toolbar>
+
+                );
+            default: return null;
+        }
+    };
     //endregion
 }

@@ -1,21 +1,17 @@
 /**
  * Created by mgradob on 2/11/17.
  */
-import React from 'react'
+import React from "react";
+import TextField from "material-ui/TextField";
+import RaisedButton from "material-ui/RaisedButton";
+import FlatButton from "material-ui/FlatButton";
+import {Card, CardActions, CardTitle, CardText} from "material-ui/Card";
 
-import Axios from 'axios';
-import Constants from '../../../../constants';
-
-import AuthenticatedView from '../../../../base/view-base-authenticated';
-
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-import {Card, CardActions, CardTitle, CardText} from 'material-ui/Card';
-
-export default class AddItemView extends AuthenticatedView {
+export default class AddItemView extends React.Component {
     //region Component
-    componentWillMount() {
+    constructor() {
+        super();
+
         this.setState({
             name: null,
             note: null,
@@ -61,11 +57,13 @@ export default class AddItemView extends AuthenticatedView {
 
                 <CardActions>
                     <FlatButton label='Cancelar' onTouchTap={this.props.onCancelClick}/>,
-                    <RaisedButton label='Agregar' primary={true} disabled={this._disableOkButton()} onTouchTap={this._createItem.bind(this)}/>
+                    <RaisedButton label='Agregar' primary={true} disabled={this._disableOkButton()}
+                                  onTouchTap={this._createItem.bind(this)}/>
                 </CardActions>
             </Card>
         );
     }
+
     //endregion
 
     //region Logic
