@@ -2,10 +2,11 @@
  * Created by mgradob on 1/25/17.
  */
 import React from "react";
+import {Link} from "react-router";
+import {Tabs, Tab} from "material-ui/Tabs";
 import {Toolbar, ToolbarGroup} from "material-ui/Toolbar";
 import FlatButton from "material-ui/FlatButton";
 import RaisedButton from "material-ui/RaisedButton";
-import {Link} from "react-router";
 
 export default class MainView extends React.Component {
     urlDashboard = '/admin/home/';
@@ -20,22 +21,27 @@ export default class MainView extends React.Component {
             <div>
                 {this.renderToolbar(this.props.location.pathname)}
 
-                {this.renderSubtoolbar(this.props.location.pathname)}
+                {/*{this.renderSubtoolbar(this.props.location.pathname)}*/}
+
+                {this.renderTabs(this.props.location.pathname)}
 
                 {this.props.children}
             </div>
         );
     }
+
     //endregion
 
     //region Logic
     renderToolbar = (location) => {
-        console.log('ReactRouter', 'Current Location', location);
+        let root = location.split('/')[1];
 
-        switch (location) {
-            case '/':
-            case '/sign-in':
-            case '/sign-up':
+        console.log('ReactRouter', 'Current Location', location, 'Root', root);
+
+        switch (root) {
+            case '':
+            case 'sign-in':
+            case 'sign-up':
                 return (
                     // TODO: Override styles
                     <Toolbar>
@@ -48,8 +54,7 @@ export default class MainView extends React.Component {
                         </ToolbarGroup>
                     </Toolbar>
                 );
-            case '/admin':
-            case '/admin/account':
+            case 'admin':
                 return (
                     // TODO: Override styles
                     <Toolbar>
@@ -62,25 +67,26 @@ export default class MainView extends React.Component {
                     </Toolbar>
 
                 );
-            default: return null;
+            default:
+                return null;
         }
     };
 
-    renderSubtoolbar = (location) => {
-        switch (location) {
-            case '/admin':
-            case '/admin/account':
+    renderTabs = (location) => {
+        let root = location.split('/')[1];
+
+        switch (root) {
+            case 'admin':
                 return (
                     // TODO: Override styles
-                    <Toolbar>
-                        <ToolbarGroup firstChild={true}>
-                            <FlatButton label='Laboratorios' containerElement={<Link to='/admin'/>}/>
-                            <FlatButton label='Mi Cuenta' containerElement={<Link to='/admin/account'/>}/>
-                        </ToolbarGroup>
-                    </Toolbar>
+                    <Tabs>
+                        <Tab data-route="/admin" label='Laboratorios' containerElement={<Link to='/admin'/>}/>
+                        <Tab label='Mi Cuenta' containerElement={<Link to='/admin/account'/>}/>
+                    </Tabs>
 
                 );
-            default: return null;
+            default:
+                return null;
         }
     };
     //endregion

@@ -1,18 +1,13 @@
 /**
  * Created by mgradob on 2/11/17.
  */
-import React from 'react'
-
-import Axios from 'axios';
-import Constants from '../../../../constants';
-
-import AddItemView from './view-admin-add-item';
-
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import {List, ListItem} from 'material-ui/List';
+import React from "react";
+import AddItemView from "./view-admin-add-item";
+import TextField from "material-ui/TextField";
+import Divider from "material-ui/Divider";
+import FlatButton from "material-ui/FlatButton";
+import RaisedButton from "material-ui/RaisedButton";
+import {List, ListItem} from "material-ui/List";
 
 export default class AddCategoryView extends React.Component {
     //region Component
@@ -29,7 +24,8 @@ export default class AddCategoryView extends React.Component {
 
     render() {
         let addButton = null;
-        if (!this.state.addItem) addButton = <FlatButton label='Agregar Item' primary={true} onTouchTap={this._showAddItemView.bind(this)}/>;
+        if (!this.state.addItem) addButton =
+            <FlatButton label='Agregar Item' primary={true} onTouchTap={this._showAddItemView.bind(this)}/>;
 
         return (
             <div>
@@ -66,6 +62,7 @@ export default class AddCategoryView extends React.Component {
             </div>
         );
     }
+
     //endregion
 
     //region Renders
@@ -84,7 +81,8 @@ export default class AddCategoryView extends React.Component {
 
     _renderAddItemView = () => {
         let view = null;
-        if (this.state.addItem) view = <AddItemView onOkClick={this._addItemListener.bind(this)} onCancelClick={this._dismissAddItemView.bind(this)}/>;
+        if (this.state.addItem) view = <AddItemView onOkClick={this._addItemListener.bind(this)}
+                                                    onCancelClick={this._dismissAddItemView.bind(this)}/>;
 
         return view;
     };
@@ -162,5 +160,6 @@ class ItemListItem extends React.Component {
             />
         )
     }
+
     //endregion
 }
