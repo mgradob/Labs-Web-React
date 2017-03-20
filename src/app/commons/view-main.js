@@ -3,10 +3,10 @@
  */
 import React from "react";
 import {Link} from "react-router";
+import * as AuthUtil from "../utils/auth-util";
 import {Tabs, Tab} from "material-ui/Tabs";
-import {Toolbar, ToolbarGroup} from "material-ui/Toolbar";
 import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
+import AppBar from "material-ui/AppBar";
 
 export default class MainView extends React.Component {
     urlDashboard = '/admin/home/';
@@ -16,6 +16,16 @@ export default class MainView extends React.Component {
     urlUsers = '/admin/home/users';
 
     //region Component
+    constructor() {
+        super();
+
+        AuthUtil.monitorSession()
+            .catch(err => {
+                console.error('Firebase', 'Sign out', err);
+                this.props.router.replace('/');
+            });
+    }
+
     render() {
         return (
             <div>
@@ -44,28 +54,18 @@ export default class MainView extends React.Component {
             case 'sign-up':
                 return (
                     // TODO: Override styles
-                    <Toolbar>
-                        <ToolbarGroup firstChild={true}>
-                            <FlatButton label='Labs CUU' containerElement={<Link to='/'/>}/>
-                        </ToolbarGroup>
-                        <ToolbarGroup>
-                            <FlatButton label='Entrar' containerElement={<Link to='/sign-in'/>}/>
-                            <RaisedButton label='Registrarse' containerElement={<Link to='/sign-up'/>}/>
-                        </ToolbarGroup>
-                    </Toolbar>
+                    <AppBar
+                        title='Labs CUU'
+                        iconElementRight={<FlatButton label='Entrar' containerElement={<Link to='/sign-in'/>}/>}
+                    />
                 );
             case 'admin':
                 return (
                     // TODO: Override styles
-                    <Toolbar>
-                        <ToolbarGroup firstChild={true}>
-                            <FlatButton label='Labs CUU' containerElement={<Link to='/admin'/>}/>
-                        </ToolbarGroup>
-                        <ToolbarGroup>
-                            <FlatButton label='Salir' containerElement={<Link to='/'/>}/>
-                        </ToolbarGroup>
-                    </Toolbar>
-
+                    <AppBar
+                        title='Labs CUU'
+                        iconElementRight={<FlatButton label='Salir' onTouchTap={this.signOut.bind(this)}/>}
+                    />
                 );
             default:
                 return null;
@@ -88,6 +88,15 @@ export default class MainView extends React.Component {
             default:
                 return null;
         }
+    };
+
+    signOut = () => {
+        AuthUtil.signOutUser()
+            .then(() => {
+                console.log('Firebase', 'Sign out', 'Success');
+                this.props.router.replace('/');
+            })
+            .catch(err => console.error('Firebase', 'Sign out', err));
     };
     //endregion
 }

@@ -2,15 +2,12 @@
  * Created by mgradob on 12/18/16.
  */
 import React from "react";
-import * as Firebase from "firebase";
+import * as AuthUtil from "../utils/auth-util";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
 import ProgressBar from "material-ui/LinearProgress";
 
-class SignInView extends React.Component {
-    authRef;
-    usersRef;
-
+export default class SignInView extends React.Component {
     //region Component
     constructor() {
         super();
@@ -20,9 +17,6 @@ class SignInView extends React.Component {
             password: '',
             showProgress: false
         };
-
-        this.authRef = Firebase.auth();
-        this.usersRef = Firebase.database().ref().child('users');
     }
 
     render() {
@@ -39,7 +33,7 @@ class SignInView extends React.Component {
                     hintText='A01234567'
                     floatingLabelText='Matrícula'
                     onChange={this._setUserId.bind(this)}
-                />
+                />@itesm.mx
                 <br/>
 
                 <TextField
@@ -82,44 +76,17 @@ class SignInView extends React.Component {
 
     //region Services
     _signInUser = () => {
-        this.setState({
-            showProgress: true
-        });
+        this.setState({showProgress: true});
 
-        this.authRef.signInWithEmailAndPassword(this.state.id_user + '@itesm.mx', this.state.password)
-            .then(() => {
-                console.log('Firebase', 'SignIn', 'Success', this.state.id_user + '@itesm.mx');
+        AuthUtil.signInUser(this.state.id_user, this.state.password)
+            .then(user => {
+                console.log('Firebase', 'SignIn', 'User Info', user);
 
-                this.usersRef.child(this.state.id_user)
-                    .once('value')
-                    .then(snap => {
-                        console.log('Firebase', 'SignIn', 'User Info', snap.val());
-                        let user = snap.val();
+                this.setState({showProgress: false});
 
-                        this.setState({
-                            showProgress: false
-                        });
-
-                        if (user.career === 'ADMIN') this.props.router.push('/admin');
-                    });
+                if (user.career === 'ADMIN') this.props.router.push('/admin');
             })
-            .catch(err => {
-                console.log('Firebase', 'SignIn', 'Error', err);
-
-                switch (err.code) {
-                    case 'auth/user-disabled':
-                        break;
-                    case 'auth/user-not-found':
-                    case 'auth/wrong-password':
-                        break;
-                }
-
-                this.setState({
-                    showProgress: false
-                });
-            });
+            .catch(err => this.setState({showProgress: false}));
     };
     //endregion
 }
-
-export default SignInView;

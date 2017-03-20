@@ -14,11 +14,11 @@ import AdminContainerView from "./app/home/admin/view-admin-container";
 import AdminLabsView from "./app/home/admin/view-admin-labs";
 import AdminAccountView from "./app/home/admin/view-admin-account";
 import LabInfoView from "./app/home/admin/lab/view-admin-lab-info";
-import AddCategoryView from "./app/home/admin/lab/view-admin-add-category";
+import CategoryDetailView from "./app/home/admin/lab/inventory/view-admin-category-detail";
 
 injectTapEventPlugin();
 
-var config = {
+const config = {
     apiKey: "AIzaSyA2GH0ELrhw_8wI6QqCXSzS7S-0Wy6MtnE",
     authDomain: "labs-d3e30.firebaseapp.com",
     databaseURL: "https://labs-d3e30.firebaseio.com",
@@ -38,18 +38,7 @@ render((
                     <IndexRoute component={AdminLabsView}/>
                     <Route path='account' component={AdminAccountView}/>
                     <Route path=':lab_id' component={LabInfoView}/>
-                    <Route path=':lab_id/add' component={AddCategoryView}/>
-                    {/*<Route path=':lab_id/:category_id' component={LabInfoView}/>*/}
-
-                    {/*<IndexRoute component={AdminHomeView}>*/}
-                    {/*<IndexRoute component={AdminDashboardView}/>*/}
-                    {/*<Route path='requests' component/>*/}
-                    {/*<Route path='inventory' component={AdminInventoryView}/>*/}
-                    {/*<Route path='inventory/add' component={AdminInventoryAddCategoryView}/>*/}
-                    {/*<Route path='inventory/:category_id' component={AdminInventoryDetailView}/>*/}
-                    {/*<Route path='inventory/:category_id/add' component={}/>*/}
-                    {/*<Route path='inventory/:category_id/edit/:item_id' component={EditItemView}/>*/}
-                    {/*</IndexRoute>*/}
+                    <Route path=':lab_id/:category_id' component={CategoryDetailView}/>
                 </Route>
             </Route>
             <Route path='*' component={ErrorView}/>
