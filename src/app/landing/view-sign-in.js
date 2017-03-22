@@ -85,6 +85,7 @@ export default class SignInView extends React.Component {
                 this.setState({showProgress: false});
 
                 if (user.career === 'ADMIN') this.props.router.push('/admin');
+                if (user.career === 'SUPER') this.props.router.push('/super');
             })
             .catch(err => this.setState({showProgress: false}));
     };
