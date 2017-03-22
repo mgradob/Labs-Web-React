@@ -3,16 +3,12 @@
  */
 import React from 'react';
 
-import HeaderView from './view-header';
-
 import Divider from 'material-ui/Divider';
 
 export default class ErrorView extends React.Component {
     render() {
         return(
             <div>
-                <HeaderView/>
-
                 <Divider />
                 <br/>
 

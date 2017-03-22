@@ -2,16 +2,10 @@
  * Created by mgradob on 12/18/16.
  */
 import React from "react";
-
-import * as AuthActions from '../../commons/actions-auth';
-
-import Axios from 'axios';
-import Constants from '../../constants';
-
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from "material-ui/FlatButton";
+import * as AuthUtil from "../utils/auth-util";
+import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
-import ProgressBar from 'material-ui/LinearProgress';
+import ProgressBar from "material-ui/LinearProgress";
 
 export default class SignInView extends React.Component {
     //region Component
@@ -22,7 +16,7 @@ export default class SignInView extends React.Component {
             id_user: '',
             password: '',
             showProgress: false
-        }
+        };
     }
 
     render() {
@@ -30,16 +24,16 @@ export default class SignInView extends React.Component {
         if (this.state.showProgress) progressBar = <ProgressBar mode="indeterminate"/>;
 
         return (
-            <div>
+            <div className="container">
                 {progressBar}
 
                 <p>Introduce tu información para ingresar. La matrícula debe tener el formato 'A0' o 'L0'.</p>
 
                 <TextField
-                    hintText='A01234567'
-                    floatingLabelText='Matrícula'
+                    hintText='a01234567@itesm.mx'
+                    floatingLabelText='Email'
                     onChange={this._setUserId.bind(this)}
-                />
+                />@itesm.mx
                 <br/>
 
                 <TextField
@@ -56,14 +50,10 @@ export default class SignInView extends React.Component {
                     disabled={!this._enableSignInButton()}
                     onTouchTap={this._signInUser.bind(this)}
                 />
-
-                <FlatButton
-                    label="Cancelar"
-                    onTouchTap={this._goBack.bind(this)}
-                />
             </div>
         );
     };
+
     //endregion
 
     //region Form Logic
@@ -82,45 +72,21 @@ export default class SignInView extends React.Component {
     _enableSignInButton = () => {
         return (this.state.id_user !== '' && this.state.password !== '') || this.state.showProgress;
     };
-
-    _goBack = () => this.props.router.replace('/');
     //endregion
 
     //region Services
     _signInUser = () => {
-        this.setState({
-            showProgress: true
-        });
+        this.setState({showProgress: true});
 
-        let url = Constants.BASE_URL + '/signin';
+        AuthUtil.signInUser(this.state.id_user, this.state.password)
+            .then(user => {
+                console.log('Firebase', 'SignIn', 'User Info', user);
 
-        let body = {
-            id_user: this.state.id_user,
-            password: this.state.password
-        };
+                this.setState({showProgress: false});
 
-        Axios.post(url, body)
-            .then((response) => {
-                console.log('SignInStore', 'Sign In', response.data);
-
-                this.setState({
-                    showProgress: false
-                });
-
-                let user = response.data.data.user;
-                let token = response.data.data.token;
-
-                AuthActions.saveSession(user, token);
-
-                if (user.user_type === 'admin') this.props.router.push('/admin');
+                if (user.career === 'ADMIN') this.props.router.push('/admin');
             })
-            .catch((error) => {
-                console.error('SignInStore', 'Sign In', error);
-
-                this.setState({
-                    showProgress: false
-                });
-            });
+            .catch(err => this.setState({showProgress: false}));
     };
     //endregion
 }

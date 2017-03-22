@@ -1,20 +1,18 @@
 /**
  * Created by mgradob on 1/23/17.
  */
-import React from 'react';
+import React from "react";
+import Axios from "axios";
+import Constants from "../../../../constants";
+import {List, ListItem} from "material-ui/List";
+import Divider from "material-ui/Divider";
+import Chip from "material-ui/Chip";
 
-import Axios from 'axios';
-import Constants from '../../../../constants';
-
-import AuthenticatedView from '../../../../base/view-base-authenticated';
-
-import {List, ListItem} from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import Chip from 'material-ui/Chip';
-
-export default class AdminDashboardView extends AuthenticatedView {
+export default class AdminDashboardView extends React.Component {
     //region Component
-    componentWillMount() {
+    constructor() {
+        super();
+
         this.setState({
             carts: [],
             newUsers: [],
@@ -60,6 +58,7 @@ export default class AdminDashboardView extends AuthenticatedView {
             </div>
         );
     }
+
     //endregion
 
     //region Logic
@@ -68,7 +67,8 @@ export default class AdminDashboardView extends AuthenticatedView {
         if (this.state.carts.length > 0)
             requestsList = <List children={
                 this.state.carts.map((cart) => {
-                    return <CartListItem cart={cart} key={this.state.carts.indexOf(cart)} onCartClicked={this._onCartClicked.bind(this)}/>;
+                    return <CartListItem cart={cart} key={this.state.carts.indexOf(cart)}
+                                         onCartClicked={this._onCartClicked.bind(this)}/>;
                 })
             }/>;
         else requestsList = <p>No hay nuevos pedidos por el momento.</p>;
@@ -81,7 +81,8 @@ export default class AdminDashboardView extends AuthenticatedView {
         if (this.state.newUsers.length > 0)
             newUsersList = <List children={
                 this.state.newUsers.map((newUser) => {
-                    return <NewUserListItem newUser={newUser} key={this.state.newUsers.indexOf(newUser)} onNewUserClicked={this._onNewUserClicked.bind(this)}/>;
+                    return <NewUserListItem newUser={newUser} key={this.state.newUsers.indexOf(newUser)}
+                                            onNewUserClicked={this._onNewUserClicked.bind(this)}/>;
                 })
             }/>;
         else newUsersList = <p>No hay nuevos usuarios por el momento.</p>;
@@ -93,7 +94,8 @@ export default class AdminDashboardView extends AuthenticatedView {
         let categoriesList;
         if (this.state.categories.length > 0)
             categoriesList = this.state.categories.map((category) => {
-                return <CategoryListItem category={category} key={this.state.categories.indexOf(category)} onCategoryClicked={this._onCategoryClicked.bind(this)}/>;
+                return <CategoryListItem category={category} key={this.state.categories.indexOf(category)}
+                                         onCategoryClicked={this._onCategoryClicked.bind(this)}/>;
             });
         else categoriesList = <p>No hay categorias por el momento.</p>;
 
@@ -105,7 +107,8 @@ export default class AdminDashboardView extends AuthenticatedView {
         if (this.state.users.length > 0)
             usersList = <List children={
                 this.state.users.map((user) => {
-                    return <UserListItem user={user} key={this.state.users.indexOf(user)} onUserClicked={this._onUserClicked.bind(this)}/>;
+                    return <UserListItem user={user} key={this.state.users.indexOf(user)}
+                                         onUserClicked={this._onUserClicked.bind(this)}/>;
                 })
             }/>;
         else usersList = <p>No hay nuevos usuarios por el momento.</p>;
@@ -140,7 +143,7 @@ export default class AdminDashboardView extends AuthenticatedView {
 
         Axios.get(url, {
             headers: {
-                "Authorization":this.state.token
+                "Authorization": this.state.token
             },
             params: {
                 lab_id: this.state.lab.id
@@ -177,7 +180,7 @@ class CartListItem extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <ListItem
                 primaryText={this.state.cart.student_name}
                 secondaryText={this.state.cart.student_id + '\n' + this.state.cart.date_requested}
@@ -185,6 +188,7 @@ class CartListItem extends React.Component {
             />
         )
     }
+
     //endregion
 
     //region Logic
@@ -203,7 +207,7 @@ class NewUserListItem extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <ListItem
                 primaryText={this.state.newUser.user_name}
                 secondaryText={this.state.newUser.user_id}
@@ -211,6 +215,7 @@ class NewUserListItem extends React.Component {
             />
         )
     }
+
     //endregion
 
     //region Logic
@@ -229,12 +234,13 @@ class CategoryListItem extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <Chip onTouchTap={this._onCategoryClicked.bind(this)}>
                 {this.state.category}
             </Chip>
         )
     }
+
     //endregion
 
     //region Logic
@@ -253,7 +259,7 @@ class UserListItem extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <ListItem
                 primaryText={this.state.user.full_name}
                 secondaryText={this.state.user.id_user}
@@ -261,6 +267,7 @@ class UserListItem extends React.Component {
             />
         )
     }
+
     //endregion
 
     //region Logic

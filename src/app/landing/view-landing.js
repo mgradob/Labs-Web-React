@@ -2,13 +2,14 @@
  * Created by mgradob on 12/5/16.
  */
 import React from "react";
-
+import {Link} from "react-router";
 import Divider from "material-ui/Divider";
+import RaisedButton from "material-ui/RaisedButton";
 
 export default class LandingView extends React.Component {
     render() {
         return (
-            <div>
+            <div className="container">
                 <p>
                     El sistema de préstamo de material y equipo en los laboratorios del campus se está
                     actualizando, el nuevo sistema estará disponible vía Web, iOS y Android lo que
@@ -17,7 +18,7 @@ export default class LandingView extends React.Component {
                 </p>
                 <ul>
                     <li>En la página labs.chi.itesm.mx, registrar tu usuario (correo institucional) y
-                        contrasentildea.
+                        contraseña.
                     </li>
                     <li>Acudir al laboratorio con tu credencial para realizar la validación de tu cuenta.</li>
                 </ul>
@@ -28,6 +29,8 @@ export default class LandingView extends React.Component {
                     <li>Consultar tu historial</li>
                 </ul>
                 <br/>
+
+                <b>No tienes una cuenta?</b> <RaisedButton primary={true} label='Regístrate' containerElement={<Link to='/sign-up'/>}/>
 
                 <h2>Pedido en línea</h2>
                 <Divider />
