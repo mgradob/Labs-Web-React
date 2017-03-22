@@ -2,7 +2,9 @@
  * Created by mgradob on 12/5/16.
  */
 import React from "react";
+import {Link} from "react-router";
 import Divider from "material-ui/Divider";
+import RaisedButton from "material-ui/RaisedButton";
 
 export default class LandingView extends React.Component {
     render() {
@@ -27,6 +29,8 @@ export default class LandingView extends React.Component {
                     <li>Consultar tu historial</li>
                 </ul>
                 <br/>
+
+                <b>No tienes una cuenta?</b> <RaisedButton primary={true} label='Regístrate' containerElement={<Link to='/sign-up'/>}/>
 
                 <h2>Pedido en línea</h2>
                 <Divider />

@@ -30,8 +30,8 @@ export default class SignInView extends React.Component {
                 <p>Introduce tu información para ingresar. La matrícula debe tener el formato 'A0' o 'L0'.</p>
 
                 <TextField
-                    hintText='A01234567'
-                    floatingLabelText='Matrícula'
+                    hintText='a01234567@itesm.mx'
+                    floatingLabelText='Email'
                     onChange={this._setUserId.bind(this)}
                 />@itesm.mx
                 <br/>

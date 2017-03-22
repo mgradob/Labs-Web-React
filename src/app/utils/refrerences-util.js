@@ -3,6 +3,25 @@
  */
 import * as Firebase from "firebase";
 
+//region Available Labs
+/**
+ * Returns a reference to the available labs root.
+ * @returns {!firebase.database.Reference|firebase.database.Reference}
+ */
+export function getAvailableLabsReference() {
+    return Firebase.database().ref().child('available-labs');
+}
+
+/**
+ * Returns a reference to the available labs in a specific campus.
+ * @param campus
+ * @returns {!firebase.database.Reference|firebase.database.Reference}
+ */
+export function getAvailableLabsPerCampusReference(campus) {
+    return getAvailableLabsReference().child(campus);
+}
+//endregion
+
 //region Labs
 /**
  * Returns a reference to the labs root.
@@ -19,6 +38,16 @@ export function getLabsReference() {
  */
 export function getLabReference(labId) {
     return getLabsReference().child(labId);
+}
+
+/**
+ * Returns a reference to a new user added to a specified lab
+ * @param labId
+ * @param userId
+ * @returns {!firebase.database.Reference|firebase.database.Reference}
+ */
+export function getLabNewUserReference(labId, userId) {
+    return getLabReference(labId).child('new-users').child(userId);
 }
 
 /**
@@ -73,7 +102,7 @@ export function getUsersReference() {
 
 /**
  * Returns a reference to a specific user.
- * @param userId
+ * @param userId - UID provided by Firebase
  * @returns {firebase.database.Reference|!firebase.database.Reference}
  */
 export function getUserReference(userId) {

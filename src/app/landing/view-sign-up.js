@@ -3,6 +3,7 @@
  */
 import React from "react";
 import * as Firebase from "firebase";
+import * as RefUtil from "../utils/refrerences-util";
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
@@ -27,9 +28,6 @@ class SignUpView extends React.Component {
     ];
 
     authRef;
-    labsRef;
-    availableLabsRef;
-    usersRef;
 
     //region Component
     constructor() {
@@ -48,23 +46,6 @@ class SignUpView extends React.Component {
         };
 
         this.authRef = Firebase.auth();
-        this.labsRef = Firebase.database().ref().child('labs');
-        this.availableLabsRef = Firebase.database().ref().child('available-labs');
-        this.usersRef = Firebase.database().ref().child('users');
-    }
-
-    componentWillUnmount() {
-        this.setState({
-            step: this.STEP_FULL_NAME,
-            showProgress: false,
-            full_name: '',
-            id_user: '',
-            career: '',
-            campus: this.campuses[0],
-            password: '',
-            availableLabs: [],
-            selectedLabs: []
-        });
     }
 
     render() {
@@ -148,46 +129,41 @@ class SignUpView extends React.Component {
             .then(user => {
                 console.log('Firebase', 'Sign Up', 'Success', user);
 
-                this.usersRef.child(this.state.id_user).set({
-                    id: this.state.id_user,
-                    name: this.state.full_name,
-                    email: this.state.id_user + '@itesm.mx',
-                    career: this.state.career,
-                    campus: this.state.campus
-                }).then(() => {
-                    console.log('Firebase', 'Sign Up', 'Success', user);
+                RefUtil.getUserReference(user.uid)
+                    .set({
+                        id: this.state.id_user,
+                        name: this.state.full_name,
+                        email: this.state.id_user + '@itesm.mx',
+                        career: this.state.career,
+                        campus: this.state.campus
+                    })
+                    .then(() => {
+                        console.log('Firebase', 'Sign Up', 'Success', user);
 
-                    this.setState({
-                        step: this.state.step + 1,
-                        showProgress: false
+                        this.setState({
+                            step: this.state.step + 1,
+                            showProgress: false
+                        });
+
+                        this._getLabs();
+                    })
+                    .catch(err => {
+                        console.error('Firebase', 'Sign Up', 'Get user info', err);
+
+                        this.setState({showProgress: false});
                     });
-
-                    this._getLabs();
-                }).catch(err => {
-                    console.log('Firebase', 'Sign Up', 'Failed', err);
-
-                    this.setState({
-                        showProgress: false
-                    });
-                });
             })
             .catch(err => {
-                console.log('Firebase', 'Sign Up', 'Failed', err);
+                console.error('Firebase', 'Sign Up', 'Create user', err);
 
-                this.setState({
-                    showProgress: false
-                });
+                this.setState({showProgress: false});
 
-                if (err.code === 'auth/email-already-in-use') {
-                    this.setState({
-                        step: this.STEP_FINISHED
-                    });
-                }
+                if (err.code === 'auth/email-already-in-use') this.setState({step: this.STEP_FINISHED});
             });
     };
 
     _getLabs = () => {
-        this.availableLabsRef.child(this.state.campus)
+        RefUtil.getAvailableLabsPerCampusReference(this.state.campus)
             .on('child_added', snap => {
                 console.log('Firebase', 'Sign Up', 'Available Labs', snap.val());
                 let lab = snap.val();
@@ -195,19 +171,14 @@ class SignUpView extends React.Component {
                 let tempLabs = this.state.availableLabs;
                 tempLabs.splice(lab.id, 0, lab);
 
-                this.setState({
-                    availableLab: tempLabs
-                });
+                this.setState({availableLab: tempLabs});
             });
     };
 
     _postLabs = () => {
         if (this.state.selectedLabs.length > 0) {
             this.state.selectedLabs.map(lab => {
-                this.labsRef.child(this.state.campus)
-                    .child(lab.id)
-                    .child('new-users')
-                    .child(this.state.id_user)
+                RefUtil.getLabNewUserReference(lab.id, this.state.id_user)
                     .set({
                         id: this.state.id_user,
                         name: this.state.full_name,
@@ -222,55 +193,27 @@ class SignUpView extends React.Component {
                         });
                     })
                     .catch(() => {
-                        console.log('Firebase', 'Sign Up', 'Error signing up on lab', lab.name);
+                        console.error('Firebase', 'Sign Up', 'Error signing up on lab', lab.name);
 
-                        this.setState({
-                            showProgress: false
-                        });
+                        this.setState({showProgress: false});
                     });
             });
 
-            this.setState({
-                showProgress: true
-            });
-        } else {
-            this.setState({
-                step: this.STEP_FINISHED
-            });
-        }
+            this.setState({showProgress: true});
+        } else this.setState({step: this.STEP_FINISHED});
     };
     //endregion
 
     //region Setters
-    _setFullName = (e) => {
-        this.setState({
-            full_name: e.target.value
-        });
-    };
+    _setFullName = e => this.setState({full_name: e.target.value});
 
-    _setIdUser = (e) => {
-        this.setState({
-            id_user: e.target.value
-        });
-    };
+    _setIdUser = e => this.setState({id_user: e.target.value});
 
-    _setCareer = (e) => {
-        this.setState({
-            career: e.target.value
-        });
-    };
+    _setCareer = e => this.setState({career: e.target.value});
 
-    _setCampus = (e, i, value) => {
-        this.setState({
-            campus: value
-        });
-    };
+    _setCampus = (e, i, value) => this.setState({campus: value});
 
-    _setPassword = (e) => {
-        this.setState({
-            password: e.target.value
-        });
-    };
+    _setPassword = e => this.setState({password: e.target.value});
     //endregion
 
     //region Form logic
@@ -287,38 +230,24 @@ class SignUpView extends React.Component {
             return;
         }
 
-        this.setState({
-            step: this.state.step + 1
-        })
+        this.setState({step: this.state.step + 1})
     };
 
-    _previousStep = () => {
-        this.setState({
-            step: this.state.step - 1
-        })
-    };
+    _previousStep = () => this.setState({step: this.state.step - 1});
 
     _onLabClicked = (lab, checked) => {
         if (checked) this._addLabToSelected(lab);
         else this._removeLabFromSelected(lab);
     };
 
-    _addLabToSelected = (lab) => {
-        this.setState({
-            selectedLabs: this.state.selectedLabs.concat(lab)
-        });
-    };
+    _addLabToSelected = lab => this.setState({selectedLabs: this.state.selectedLabs.concat(lab)});
 
-    _removeLabFromSelected = (lab) => {
+    _removeLabFromSelected = lab => {
         if (this.state.selectedLabs.length > 1) {
             let index = this.state.selectedLabs.indexOf(lab);
 
-            this.setState({
-                selectedLabs: this.state.selectedLabs.splice(index, 1)
-            });
-        } else this.setState({
-            selectedLabs: []
-        });
+            this.setState({selectedLabs: this.state.selectedLabs.splice(index, 1)});
+        } else this.setState({selectedLabs: []});
     };
 
     _getStepView = () => {
@@ -470,9 +399,7 @@ class LabListItem extends React.Component {
     }
 
     componentWillMount() {
-        this.setState({
-            lab: this.props.lab
-        });
+        this.setState({lab: this.props.lab});
     }
 
     _onLabClicked = (e, isChecked) => {
