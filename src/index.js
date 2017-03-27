@@ -10,6 +10,7 @@ import ErrorView from "./app/commons/view-error";
 import LandingView from "./app/landing/view-landing";
 import SignInView from "./app/landing/view-sign-in";
 import SignUpView from "./app/landing/view-sign-up";
+import SuperAdminView from "./app/super-admin/view-super-admin-dashboard";
 import AdminContainerView from "./app/home/admin/view-admin-container";
 import AdminLabsView from "./app/home/admin/view-admin-labs";
 import AdminAccountView from "./app/home/admin/view-admin-account";
@@ -40,6 +41,7 @@ render((
                     <Route path=':lab_id' component={LabInfoView}/>
                     <Route path=':lab_id/:category_id' component={CategoryDetailView}/>
                 </Route>
+                <Route path='super' component={SuperAdminView}/>
             </Route>
             <Route path='*' component={ErrorView}/>
         </Router>

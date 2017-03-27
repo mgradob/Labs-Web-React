@@ -60,6 +60,7 @@ export default class MainView extends React.Component {
                     />
                 );
             case 'admin':
+            case 'super':
                 return (
                     // TODO: Override styles
                     <AppBar

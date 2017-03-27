@@ -3,7 +3,9 @@
  */
 import React from "react";
 import * as AuthUtil from "../../utils/auth-util";
+import ResetPasswordDialog from "../../commons/dialog-reset-password";
 import CircularProgress from "material-ui/CircularProgress";
+import FlatButton from "material-ui/FlatButton";
 
 export default class AdminAccountView extends React.Component {
     //region Component
@@ -11,7 +13,8 @@ export default class AdminAccountView extends React.Component {
         super();
 
         this.state = {
-            user: null
+            user: null,
+            showResetPassword: false
         };
 
         AuthUtil.getCurrentUser()
@@ -27,9 +30,6 @@ export default class AdminAccountView extends React.Component {
         );
     }
 
-    //endregion
-
-    //region Logic
     renderUserForm = () => {
         return (
             <div>
@@ -40,8 +40,28 @@ export default class AdminAccountView extends React.Component {
                 <p>Email: {this.state.user.email}</p>
 
                 <p>Campus: {this.state.user.campus}</p>
+
+                <FlatButton 
+                    label='Cambiar password'
+                    primary={true}
+                    onTouchTap={this.toggleShowResetPassword.bind(this)}
+                />
+
+                {this.renderResetPasswordDialog()}
             </div>
         );
     };
+
+    renderResetPasswordDialog = () => {
+        if (this.state.showResetPassword) 
+            return(
+                <ResetPasswordDialog open={this.state.showResetPassword} onRequestClose={this.toggleShowResetPassword.bind(this)} email={this.state.user.email}/>
+            );
+        else return null;
+    };
+    //endregion
+
+    //region Logic
+    toggleShowResetPassword = () => this.setState({showResetPassword: !this.state.showResetPassword});
     //endregion
 }
