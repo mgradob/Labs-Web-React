@@ -47,7 +47,7 @@ export function getLabReference(labId) {
  * @returns {!firebase.database.Reference|firebase.database.Reference}
  */
 export function getLabNewUserReference(labId, userId) {
-    return getLabReference(labId).child('new-users').child(userId);
+    return getLabReference(labId).child('new_users').child(userId);
 }
 
 /**

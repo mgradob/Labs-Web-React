@@ -46,14 +46,16 @@ export default class LabInfoView extends React.Component {
                     <h4>Items</h4>
                     <Divider/>
                     <br/>
-
                     <RaisedButton
                         label='Agregar Categoría'
                         primary={true}
                         onTouchTap={this.toggleAddCategoryDialog.bind(this)}
                     />
-
                     {this.renderCategories()}
+
+                    <h4>Nuevos usuarios</h4>
+                    <Divider/>
+                    {this.renderNewUsers()}
 
                     {this.renderAddCategoryDialog()}
                 </div>
@@ -86,6 +88,23 @@ export default class LabInfoView extends React.Component {
             );
         else return null;
     };
+
+    renderNewUsers = () => {
+        if (this.state.labInfo.new_users != null)
+            return (
+                <List children={
+                    this.state.labInfo.new_users.map((user) => {
+                        return <ListItem
+                            primaryText={user.name}
+                            secondaryText={user.id}
+                            key={user.uid}
+                            containerElement={<Link to={this.props.location.pathname + '/new-user/' + user.id}/>}
+                        />
+                    })
+                }/>
+            );
+        else return <p>No hay nuevos usuarios.</p>;
+    };
     //endregion
 
     //region Logic
@@ -95,7 +114,7 @@ export default class LabInfoView extends React.Component {
         RefUtil.getLabReference(labId)
             .on('value', snap => {
                 let labInfo = snap.val();
-                let labCategories = [];
+                let labCategories = [], newUsers = [];
 
                 if (labInfo.categories != null && labInfo.categories !== '') {
                     let catKeys = Object.keys(labInfo.categories);
@@ -113,6 +132,24 @@ export default class LabInfoView extends React.Component {
                     }
 
                     labInfo.categories = labCategories;
+                }
+
+                if (labInfo.new_users != null && labInfo.new_users !== '') {
+                    let newUsersKeys = Object.keys(labInfo.new_users);
+
+                    for (let i = 0; i < newUsersKeys.length; i++) {
+                        let k = newUsersKeys[i];
+
+                        let user = {
+                            id: labInfo.new_users[k].id,
+                            name: labInfo.new_users[k].name,
+                            date: labInfo.new_users[k].date
+                        }
+
+                        newUsers.push(user);
+                    }
+
+                    labInfo.new_users = newUsers;
                 }
 
                 this.setState({labInfo: labInfo});

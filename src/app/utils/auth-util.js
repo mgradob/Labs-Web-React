@@ -55,6 +55,26 @@ export function signOutUser() {
 }
 
 /**
+ * Gets the current signed user on firebase auth system.
+ * @returns {Promise}
+ */
+export function getCurrentFirebaseUser() {
+    return new Promise((resolve, reject) => {
+        Firebase.auth().onAuthStateChanged((user) => {
+            console.log('Firebase', 'Current user', user);
+
+            if (user) {
+                console.log('Firebase', 'Current firebase user', user);
+
+                resolve(user);
+            } else {
+                reject(Error('User logged out'));
+            }
+        });
+    });
+}
+
+/**
  * Gets the current signed user on the users table.
  * @returns {Promise}
  */

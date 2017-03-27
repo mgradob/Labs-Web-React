@@ -4,6 +4,7 @@
 import React from "react";
 import * as Firebase from "firebase";
 import * as RefUtil from "../utils/refrerences-util";
+import * as AuthUtil from "../utils/auth-util";
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
@@ -176,31 +177,38 @@ class SignUpView extends React.Component {
     };
 
     _postLabs = () => {
-        if (this.state.selectedLabs.length > 0) {
-            this.state.selectedLabs.map(lab => {
-                RefUtil.getLabNewUserReference(lab.id, this.state.id_user)
-                    .set({
-                        id: this.state.id_user,
-                        name: this.state.full_name,
-                        date: Date.now()
-                    })
-                    .then(() => {
-                        console.log('Firebase', 'Sign Up', 'Signed up on lab', lab.name);
+        AuthUtil.getCurrentFirebaseUser()
+            .then(user => {
+                if (this.state.selectedLabs.length > 0) {
+                    this.state.selectedLabs.map(lab => {
+                        RefUtil.getLabNewUserReference(lab.id, user.uid)
+                            .set({
+                                uid: user.uid,
+                                id: this.state.id_user,
+                                name: this.state.full_name,
+                                date: Date.now()
+                            })
+                            .then(() => {
+                                console.log('Firebase', 'Sign Up', 'Signed up on lab', lab.name);
 
-                        this.setState({
-                            showProgress: false,
-                            step: this.STEP_FINISHED
-                        });
-                    })
-                    .catch(() => {
-                        console.error('Firebase', 'Sign Up', 'Error signing up on lab', lab.name);
+                                this.setState({
+                                    showProgress: false,
+                                    step: this.STEP_FINISHED
+                                });
+                            })
+                            .catch(() => {
+                                console.error('Firebase', 'Sign Up', 'Error signing up on lab', lab.name);
 
-                        this.setState({showProgress: false});
+                                this.setState({showProgress: false});
+                            });
                     });
-            });
 
-            this.setState({showProgress: true});
-        } else this.setState({step: this.STEP_FINISHED});
+                    this.setState({showProgress: true});
+                } else this.setState({step: this.STEP_FINISHED});
+            })
+            .catch(err => {
+
+            });
     };
     //endregion
 
