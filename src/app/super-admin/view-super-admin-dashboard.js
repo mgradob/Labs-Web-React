@@ -17,9 +17,10 @@ import Checkbox from "material-ui/Checkbox";
 class SuperAdminView extends React.Component {
     STEP_FULL_NAME = 0;
     STEP_ID_USER = 1;
-    STEP_CAMPUS = 2;
-    STEP_LABS = 3;
-    STEP_FINISHED = 4;
+    STEP_EMAIL = 2;
+    STEP_CAMPUS = 3;
+    STEP_LABS = 4;
+    STEP_FINISHED = 5;
 
     campuses = [
         'Chihuahua'
@@ -38,6 +39,7 @@ class SuperAdminView extends React.Component {
             full_name: '',
             id_user: '',
             career: 'ADMIN',
+            email: '',
             campus: this.campuses[0],
             password: '',
             availableLabs: [],
@@ -78,6 +80,14 @@ class SuperAdminView extends React.Component {
                         </StepContent>
                     </Step>
                     <Step>
+                        <StepLabel>Email</StepLabel>
+                        <StepContent>
+                            {stepView}
+                            <br/>
+                            {actions}
+                        </StepContent>
+                    </Step>
+                    <Step>
                         <StepLabel>Campus</StepLabel>
                         <StepContent>
                             {stepView}
@@ -109,8 +119,8 @@ class SuperAdminView extends React.Component {
     //endregion
 
     //region Services
-    _signUpUser = () => {
-        this.authRef.createUserWithEmailAndPassword(this.state.id_user + '@itesm.mx', this.state.password)
+    _signUpUser = (email) => {
+        this.authRef.createUserWithEmailAndPassword(email, this.state.password)
             .then(user => {
                 console.log('Firebase', 'Sign Up', 'Success', user);
 
@@ -118,7 +128,7 @@ class SuperAdminView extends React.Component {
                     .set({
                         id: this.state.id_user,
                         name: this.state.full_name,
-                        email: this.state.id_user + '@itesm.mx',
+                        email: email,
                         career: this.state.career,
                         campus: this.state.campus
                     })
@@ -197,13 +207,15 @@ class SuperAdminView extends React.Component {
         password: e.target.value
     });
 
+    _setEmail = e => this.setState({email: e.target.value});
+
     _setCampus = e => this.setState({campus: e.target.value});
     //endregion
 
     //region Form logic
     _nextStep = () => {
         if (this.state.step === this.STEP_CAMPUS) {
-            this._signUpUser();
+            this._signUpUser(this.state.email);
 
             return;
         }
@@ -243,6 +255,9 @@ class SuperAdminView extends React.Component {
             case this.STEP_ID_USER:
                 return <TextField hintText='Matrícula' floatingLabelText='Matrícula'
                                   onChange={this._setIdUser.bind(this)}/>;
+            case this.STEP_EMAIL:
+                return <TextField hintText='Email' floatingLabelText='Email'
+                                  onChange={this._setEmail.bind(this)}/>;
             case this.STEP_CAMPUS:
                 let campusMenuItems = this.campuses.map((campus) => {
                     return <MenuItem key={this.campuses.indexOf(campus)} value={campus} primaryText={campus}/>
@@ -291,6 +306,21 @@ class SuperAdminView extends React.Component {
                         label='Continuar'
                         primary={true}
                         disabled={this.state.id_user === ''}
+                        onTouchTap={this._nextStep.bind(this)}
+                    />
+                ];
+            case this.STEP_EMAIL:
+                return [
+                    <FlatButton
+                        key={0}
+                        label='Atrás'
+                        onTouchTap={this._previousStep.bind(this)}
+                    />,
+                    <RaisedButton
+                        key={1}
+                        label='Continuar'
+                        primary={true}
+                        disabled={this.state.email === ''}
                         onTouchTap={this._nextStep.bind(this)}
                     />
                 ];
