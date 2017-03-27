@@ -27,7 +27,7 @@ export default class SignInView extends React.Component {
             <div className="container">
                 {progressBar}
 
-                <p>Introduce tu información para ingresar. La matrícula debe tener el formato 'A0' o 'L0'.</p>
+                <p>Introduce tu correo electrónico institucional para ingresar.</p>
 
                 <TextField
                     hintText='a01234567@itesm.mx'
