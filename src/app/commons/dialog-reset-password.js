@@ -3,8 +3,6 @@
  */
 import React from "react";
 import * as Firebase from "firebase";
-import * as RefUtil from "../utils/refrerences-util";
-import TextField from "material-ui/TextField";
 import FlatButton from "material-ui/FlatButton";
 import Dialog from "material-ui/Dialog";
 

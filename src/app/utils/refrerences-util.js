@@ -108,4 +108,13 @@ export function getUsersReference() {
 export function getUserReference(userId) {
     return getUsersReference().child(userId);
 }
+
+/**
+ * Returns a reference to a specific new user.
+ * @param userId - UID provided by Firebase
+ * @returns {firebase.database.Reference|!firebase.database.Reference}
+ */
+export function getNewUserReference(labId, newUserUid) {
+    return getLabReference(labId).child('new_users').child(newUserUid);
+}
 //endregion

@@ -98,7 +98,7 @@ export default class LabInfoView extends React.Component {
                             primaryText={user.name}
                             secondaryText={user.id}
                             key={user.uid}
-                            containerElement={<Link to={this.props.location.pathname + '/new-user/' + user.id}/>}
+                            containerElement={<Link to={this.props.location.pathname + '/new-user/' + user.uid}/>}
                         />
                     })
                 }/>
@@ -142,6 +142,7 @@ export default class LabInfoView extends React.Component {
 
                         let user = {
                             id: labInfo.new_users[k].id,
+                            uid: labInfo.new_users[k].uid,
                             name: labInfo.new_users[k].name,
                             date: labInfo.new_users[k].date
                         }
