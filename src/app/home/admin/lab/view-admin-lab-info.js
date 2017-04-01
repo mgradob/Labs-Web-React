@@ -35,7 +35,7 @@ export default class LabInfoView extends React.Component {
     }
 
     renderLabInfo = () => {
-        if (this.state.labInfo != null)
+        if (this.state.labInfo !== null)
             return (
                 <div>
                     <h1>{this.state.labInfo.name}</h1>
@@ -52,10 +52,16 @@ export default class LabInfoView extends React.Component {
                         onTouchTap={this.toggleAddCategoryDialog.bind(this)}
                     />
                     {this.renderCategories()}
+                    <br/>
 
                     <h4>Nuevos usuarios</h4>
                     <Divider/>
                     {this.renderNewUsers()}
+                    <br/>
+
+                    <h4>Usuarios</h4>
+                    <Divider/>
+                    {this.renderUsers()}
 
                     {this.renderAddCategoryDialog()}
                 </div>
@@ -64,7 +70,7 @@ export default class LabInfoView extends React.Component {
     };
 
     renderCategories = () => {
-        if (this.state.labInfo.categories != null)
+        if (this.state.labInfo.categories !== undefined)
             return (
                 <List children={
                     this.state.labInfo.categories.map((category) => {
@@ -72,7 +78,7 @@ export default class LabInfoView extends React.Component {
                             primaryText={category.name}
                             secondaryText={category.description}
                             key={category.id}
-                            containerElement={<Link to={this.props.location.pathname + '/' + category.id}/>}
+                            containerElement={<Link to={this.props.location.pathname + '/category/' + category.id}/>}
                         />
                     })
                 }/>
@@ -81,7 +87,7 @@ export default class LabInfoView extends React.Component {
     };
 
     renderAddCategoryDialog = () => {
-        if (this.state.labId != null)
+        if (this.state.labId !== undefined)
             return (
                 <AddCategoryDialog labId={this.state.labId} open={this.state.showAddCategory}
                                    onRequestClose={this.toggleAddCategoryDialog.bind(this)}/>
@@ -90,7 +96,7 @@ export default class LabInfoView extends React.Component {
     };
 
     renderNewUsers = () => {
-        if (this.state.labInfo.new_users != null)
+        if (this.state.labInfo.new_users !== undefined)
             return (
                 <List children={
                     this.state.labInfo.new_users.map((user) => {
@@ -105,6 +111,23 @@ export default class LabInfoView extends React.Component {
             );
         else return <p>No hay nuevos usuarios.</p>;
     };
+
+    renderUsers = () => {
+        if (this.state.labInfo.users !== undefined)
+            return (
+                <List children={
+                    this.state.labInfo.users.map((user) => {
+                        return <ListItem
+                            primaryText={user.name}
+                            secondaryText={user.id}
+                            key={user.uid}
+                            containerElement={<Link to={this.props.location.pathname + '/user/' + user.uid}/>}
+                        />
+                    })
+                }/>
+            );
+        else return <p>No hay usuarios por el momento.</p>;
+    };
     //endregion
 
     //region Logic
@@ -114,9 +137,11 @@ export default class LabInfoView extends React.Component {
         RefUtil.getLabReference(labId)
             .on('value', snap => {
                 let labInfo = snap.val();
-                let labCategories = [], newUsers = [];
+                let labCategories = [];
+                let newUsers = [];
+                let users = [];
 
-                if (labInfo.categories != null && labInfo.categories !== '') {
+                if (labInfo.categories !== undefined && labInfo.categories !== '') {
                     let catKeys = Object.keys(labInfo.categories);
 
                     for (let i = 0; i < catKeys.length; i++) {
@@ -134,7 +159,7 @@ export default class LabInfoView extends React.Component {
                     labInfo.categories = labCategories;
                 }
 
-                if (labInfo.new_users != null && labInfo.new_users !== '') {
+                if (labInfo.new_users !== undefined && labInfo.new_users !== '') {
                     let newUsersKeys = Object.keys(labInfo.new_users);
 
                     for (let i = 0; i < newUsersKeys.length; i++) {
@@ -145,12 +170,31 @@ export default class LabInfoView extends React.Component {
                             uid: labInfo.new_users[k].uid,
                             name: labInfo.new_users[k].name,
                             date: labInfo.new_users[k].date
-                        }
+                        };
 
                         newUsers.push(user);
                     }
 
                     labInfo.new_users = newUsers;
+                }
+
+                if (labInfo.users !== undefined && labInfo.users !== '') {
+                    let usersKeys = Object.keys(labInfo.users);
+
+                    for (let i = 0; i < usersKeys.length; i++) {
+                        let k = usersKeys[i];
+
+                        let user = {
+                            id: labInfo.users[k].id,
+                            uid: labInfo.users[k].uid,
+                            name: labInfo.users[k].name,
+                            date: labInfo.users[k].date
+                        };
+
+                        users.push(user);
+                    }
+
+                    labInfo.users = users;
                 }
 
                 this.setState({labInfo: labInfo});

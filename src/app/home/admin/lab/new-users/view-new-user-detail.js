@@ -18,7 +18,7 @@ export default class NewUserDetailView extends React.Component {
     }
 
     componentWillMount() {
-        let labId = this.props.params.lab_id
+        let labId = this.props.params.lab_id;
         let newUserUid = this.props.params.new_user_uid;
 
         this.setState({labId: labId});
@@ -33,7 +33,7 @@ export default class NewUserDetailView extends React.Component {
 
     //region Logic
     renderNewUserDetail = () => {
-        if(this.state.newUserInfo != null) 
+        if(this.state.newUserInfo !== null)
             return(
                 <div>
                     <h1>{this.state.newUserInfo.name}</h1>
@@ -45,7 +45,7 @@ export default class NewUserDetailView extends React.Component {
                 </div>
             );
         else return <CircularProgress />;
-    }
+    };
 
     getNewUserInfo = (labId, newUserUid) => {
         RefUtil.getNewUserReference(labId, newUserUid)
@@ -53,8 +53,8 @@ export default class NewUserDetailView extends React.Component {
                 console.log('Firebase', 'New user', snap.val());
 
                 this.setState({newUserInfo: snap.val()});
-            })
-    }
+            });
+    };
 
     acceptUser = () => {
         RefUtil.getLabReference(this.state.labId)

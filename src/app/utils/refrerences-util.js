@@ -89,6 +89,25 @@ export function getCategoryItemsReference(labId, categoryId) {
 export function getItemReference(labId, categoryId, itemId) {
     return getCategoryItemsReference(labId, categoryId).child(itemId);
 }
+
+/**
+ * Returns a reference to the users root for a lab.
+ * @param labId
+ * @returns {firebase.database.Reference|!firebase.database.Reference}
+ */
+export function getLabUsersReference(labId) {
+    return getLabReference(labId).child('users');
+}
+
+/**
+ * Returns a reference to a specific user on a lab.
+ * @param labId
+ * @param userUid
+ * @returns {firebase.database.Reference|!firebase.database.Reference}
+ */
+export function getLabUserReference(labId, userUid) {
+    return getLabUsersReference(labId).child(userUid);
+}
 //endregion
 
 //region Users

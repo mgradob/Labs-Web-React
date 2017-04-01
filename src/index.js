@@ -17,6 +17,7 @@ import AdminAccountView from "./app/home/admin/view-admin-account";
 import LabInfoView from "./app/home/admin/lab/view-admin-lab-info";
 import CategoryDetailView from "./app/home/admin/lab/inventory/view-admin-category-detail";
 import NewUserDetailView from "./app/home/admin/lab/new-users/view-new-user-detail";
+import UserDetailView from "./app/home/admin/lab/users/view-user-detail";
 
 injectTapEventPlugin();
 
@@ -40,8 +41,9 @@ render((
                     <IndexRoute component={AdminLabsView}/>
                     <Route path='account' component={AdminAccountView}/>
                     <Route path=':lab_id' component={LabInfoView}/>
-                    <Route path=':lab_id/:category_id' component={CategoryDetailView}/>
+                    <Route path=':lab_id/category/:category_id' component={CategoryDetailView}/>
                     <Route path=':lab_id/new-user/:new_user_uid' component={NewUserDetailView}/>
+                    <Route path=':lab_id/user/:user_uid' component={UserDetailView}/>
                 </Route>
                 <Route path='super' component={SuperAdminView}/>
             </Route>
